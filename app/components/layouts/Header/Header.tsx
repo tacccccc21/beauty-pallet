@@ -16,7 +16,7 @@ const Header = () => {
       <div className="inner">
         <Link href="/">
         <img className='logo' src="/logo.png" alt="" />
-        Beauty Palette
+          <div className="text">Beauty Palette</div>
         </Link>
         <div
           className={`menu ${menuOpen ? 'is-active' : ''}`}
