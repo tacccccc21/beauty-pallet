@@ -1,0 +1,21 @@
+@use './color.scss' as *;
+
+.mv{
+  max-height: 460px;
+  overflow: hidden;
+  position: relative;
+  >img{
+    width: 100%;
+    height: auto; // 比率維持
+    object-fit: cover;
+    object-position: left center;
+    display: block;
+  }
+  .title{
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translate(0,-50%);
+    color: $text-color;
+  }
+}
