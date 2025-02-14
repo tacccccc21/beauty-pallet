@@ -1,5 +1,7 @@
 @use './color.scss' as *;
 
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Kaisei+Tokumin:wght@400;500&family=Noto+Sans+JP:wght@100..900&display=swap');
+
 .mv{
   max-height: 460px;
   overflow: hidden;
@@ -17,5 +19,17 @@
     right: 5%;
     transform: translate(0,-50%);
     color: $text-color;
+    .catchcopy{
+      font-size: 32px;
+      font-family: "Kaisei Tokumin", serif;
+  font-weight: 400;
+  font-style: normal;
+    }
+    .siteName{
+      font-family: "Bad Script", serif;
+      font-weight: 400;
+      font-style: normal;
+      
+    }
   }
 }
