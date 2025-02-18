@@ -20,7 +20,7 @@ export default function LoginPage() {
     });
 
     if (error) {
-      setError(error.message);
+      setError("ログインできませんでしたああああ");
     } else {
       // 成功時にトップページへ
       router.push('/');
@@ -39,6 +39,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder='example@testexample.com'
                 required
               />
             </div>
@@ -48,6 +49,7 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder='password'
                 required
               />
             </div>

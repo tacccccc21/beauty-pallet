@@ -8,13 +8,15 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setMessage(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -22,15 +24,15 @@ export default function SignUpPage() {
     if (error) {
       setError(error.message);
     } else {
-      router.push('/');
+      router.push('/login')
     }
   };
 
   return (
     <main>
       <div className="inner">
-        <h1>ログイン</h1>
-        <form onSubmit={handleLogin}>
+        <h1>サインアップ</h1>
+        <form onSubmit={handleSignUp}>
           <input
             type="email"
             placeholder="メールアドレス"
@@ -44,7 +46,8 @@ export default function SignUpPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <p style={{ color: 'red' }}>{error}</p>}
-          <button type="submit">ログイン</button>
+          {message && <p style={{ color: 'green' }}>{message}</p>}
+          <button type="submit">登録</button>
         </form>
       </div>
     </main>
