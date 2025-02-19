@@ -13,7 +13,7 @@ export default function Home() {
       </section>
 
       <section className="about">
-          
+        
       </section>
     </main>
   );

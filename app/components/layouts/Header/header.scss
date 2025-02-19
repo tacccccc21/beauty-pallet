@@ -8,12 +8,17 @@
   height: 80px;
   width: 100%;
   position: fixed;
+  z-index: 1000;
   top: 0;
   left: 0;
   padding: 10px;
   display: flex;
   align-items: center;
-
+  &__contents{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
   .inner {
     width: 100%;
     display: flex;
@@ -33,7 +38,14 @@
         width: 25px;
       }
     }
-    .menu {
+
+    .icon{
+      width: 30px;
+      aspect-ratio: 1 / 1;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .ham-btn {
       width: 30px;
       aspect-ratio: 1 / 1;
       position: relative;
@@ -73,6 +85,31 @@
         > span:nth-of-type(3) {
           top: 14px;
           transform: rotate(-45deg);
+        }
+      }
+    }
+  }
+  .menu{
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    right: -100%;
+    z-index: 3;
+    background-color: $base-color;
+
+    transition: all 0.3s;
+    &.is-active{
+      right: 0;
+    }
+    ul{
+      padding: 20px;
+      padding-top: 0;
+      li{
+        text-align: center;
+        padding: 20px;
+        border-bottom: 1px solid $accent-color;
+        &:first-of-type{
+          border-top: 1px solid $accent-color;
         }
       }
     }

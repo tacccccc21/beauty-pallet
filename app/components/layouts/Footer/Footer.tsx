@@ -1,10 +1,14 @@
-import React from 'react'
+import React from 'react';
+import './footer.scss';
+
 
 const Footer = () => {
   return (
-    <div>
-      copyright
-    </div>
+    <footer className='l-footer'>
+      <div className="copy">
+        copyright
+      </div>
+    </footer>
   )
 }
 

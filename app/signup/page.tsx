@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
@@ -16,15 +17,43 @@ export default function SignUpPage() {
     setError(null);
     setMessage(null);
 
-    const { error } = await supabase.auth.signUp({
+    if (password.length < 6) {
+      setError('パスワードは6文字以上で入力してください');
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
-      setError(error.message);
-    } else {
-      router.push('/login')
+      setError(`Supabase Authエラー: ${error.message}`);
+      return;
+    }
+
+    if (data.user) {
+      try {
+        const res = await fetch('/api/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            name,
+          }),
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          setError(`APIエラー: ${errorText}`);
+          return;
+        }
+
+        setMessage('確認メールを送信しました！');
+        router.push('/');
+      } catch (err: any) {
+        setError(`通信エラー: ${err.message}`);
+      }
     }
   };
 
@@ -41,9 +70,15 @@ export default function SignUpPage() {
           />
           <input
             type="password"
-            placeholder="パスワード"
+            placeholder="パスワード（6文字以上）"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="名前"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {message && <p style={{ color: 'green' }}>{message}</p>}
