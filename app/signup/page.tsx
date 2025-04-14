@@ -33,6 +33,8 @@ export default function SignUpPage() {
     }
 
     if (data.user) {
+      const authId = data.user.id;
+
       try {
         const res = await fetch('/api/user', {
           method: 'POST',
@@ -40,6 +42,7 @@ export default function SignUpPage() {
           body: JSON.stringify({
             email,
             name,
+            authId,
           }),
         });
 

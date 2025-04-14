@@ -15,14 +15,16 @@ datasource db {
 
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String
-  icon  String?
-  role  Role    @default(USER)
-  blogs Blog[]
+  id      Int     @id @default(autoincrement())
+  authId  String  @unique
+  email   String  @unique
+  name    String
+  icon    String?
+  role    Role    @default(USER)
+  blogs   Blog[]
   reviews Review[]
 }
+
 
 model Blog {
   id        Int      @id @default(autoincrement())
@@ -31,7 +33,16 @@ model Blog {
   createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
+  tags      Tag[]
 }
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  blogs Blog[]
+}
+
+
 
 model Review {
   id        Int      @id @default(autoincrement())

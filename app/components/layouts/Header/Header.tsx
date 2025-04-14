@@ -25,13 +25,16 @@ const Header = () => {
 
         // DBから名前取得
         const { data: userData, error } = await supabase
-          .from('User') // Supabase側のテーブル名（Prismaで作ったやつ）
-          .select('name')
-          .eq('email', sessionData.user.email)
+          .from("User")
+          .select("name")
+          .eq("authid", sessionData.user.id)
           .single();
 
         if (error) {
           console.error('ユーザーデータ取得失敗:', error.message);
+        } else {
+          console.log("取得したユーザー情報:", userData);
+          console.log("取得したユーザー名:", userData?.name);
         }
 
         if (userData) {
