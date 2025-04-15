@@ -1,0 +1,16 @@
+@use '../../../color.scss' as *;
+
+.to-review{
+  background-color: $second-color;
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 50px;
+  aspect-ratio: 1 / 1;
+  font-size: 32px;
+  vertical-align: middle;
+  text-align: center;
+  border-radius: 500px;
+  border: 2px solid $accent-color;
+  color: $text-color-light;
+}

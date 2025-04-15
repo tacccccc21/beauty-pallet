@@ -2,17 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/app/lib/supabaseClient';
-
-interface UserData {
-  id: number;
-  email: string;
-  name: string | null;
-  icon: string | null;
-  role: string;
-}
+import { useUser } from '@/app/context/UserContext';
 
 export default function MyPage() {
-  const [user, setUser] = useState<UserData | null>(null);
+  const { user, setUser } = useUser();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
@@ -20,36 +13,36 @@ export default function MyPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
-
+  
       const { data: sessionData, error: sessionError } = await supabase.auth.getUser();
       if (sessionError || !sessionData.user) {
         setError('ログイン情報が取得できませんでした');
         setLoading(false);
         return;
       }
-
+  
       const { data: userData, error: userError } = await supabase
         .from('User')
-        .select('id, email, name, icon, role')
-        .eq('email', sessionData.user.email)
+        .select('id, email, name, icon, role, authId')
+        .eq('authId', sessionData.user.id)
         .single();
-
+  
       if (userError) {
         setError('ユーザーデータが取得できませんでした: ' + userError.message);
       } else {
         setUser(userData);
         setNewName(userData.name || '');
       }
-
+  
       setLoading(false);
     };
-
+  
     fetchUserData();
-  }, []);
+  }, [setUser]);
+  
 
   const handleNameChange = async () => {
     if (!user) return;
-
 
     const { data: sessionData } = await supabase.auth.getUser();
     const sessionUserId = sessionData.user?.id;
@@ -57,7 +50,7 @@ export default function MyPage() {
     const { error } = await supabase
       .from('User')
       .update({ name: newName })
-      .eq("authId", sessionUserId);
+      .eq('authId', sessionUserId); // ← authIdで更新
 
     if (error) {
       alert('名前変更に失敗しました: ' + error.message);
@@ -71,31 +64,28 @@ export default function MyPage() {
     if (!user) return;
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     const fileName = `${user.id}_${Date.now()}`;
-  
+
     const { data, error } = await supabase.storage
       .from('avatars')
       .upload(fileName, file, {
         cacheControl: '3600',
-        upsert: true, // 同名なら上書き
+        upsert: true,
       });
-  
-    console.log('upload result:', data, error);
-  
+
     if (error) {
-      console.error('アップロードエラー:', error);
       alert('アップロードに失敗しました: ' + error.message);
       return;
     }
-  
+
     const iconUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`;
-  
+
     const { error: updateError } = await supabase
       .from('User')
       .update({ icon: iconUrl })
-      .eq('id', user.id);
-  
+      .eq('authId', user.authId); // ここもauthIdで安全に更新
+
     if (updateError) {
       alert('アイコンURL保存に失敗しました: ' + updateError.message);
     } else {
@@ -103,7 +93,6 @@ export default function MyPage() {
       setUser({ ...user, icon: iconUrl });
     }
   };
-  
 
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;

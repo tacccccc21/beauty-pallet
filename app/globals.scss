@@ -32,6 +32,7 @@ body {
 main{
   margin-top: 80px;
   min-height: calc(100vh - 128px);
+  background-color: $base-color-natural-white;
   .inner{
     padding: 20px;
   }
