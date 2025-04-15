@@ -50,10 +50,14 @@ export default function MyPage() {
   const handleNameChange = async () => {
     if (!user) return;
 
+
+    const { data: sessionData } = await supabase.auth.getUser();
+    const sessionUserId = sessionData.user?.id;
+
     const { error } = await supabase
       .from('User')
       .update({ name: newName })
-      .eq('id', user.id);
+      .eq("authId", sessionUserId);
 
     if (error) {
       alert('名前変更に失敗しました: ' + error.message);

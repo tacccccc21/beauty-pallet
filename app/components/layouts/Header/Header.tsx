@@ -3,32 +3,41 @@
 import React, { useState, useEffect } from 'react';
 import './header.scss';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '@/app/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
 interface UserData {
+  id: number;
+  email: string;
   name: string | null;
+  icon: string | null; // ← これが必要！
+  role: string;
 }
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: sessionData } = await supabase.auth.getUser();
+      
 
       if (sessionData.user) {
         setIsLoggedIn(true);
-
+        setUserId(sessionData.user.id);
+        
         // DBから名前取得
         const { data: userData, error } = await supabase
-          .from("User")
-          .select("name")
-          .eq("authid", sessionData.user.id)
-          .single();
+        .from("User")
+        .select("*")
+        .eq("authId", sessionData.user.id)
+        .single();
+        console.log("取得したuserData:", userData);
 
         if (error) {
           console.error('ユーザーデータ取得失敗:', error.message);
@@ -64,16 +73,17 @@ const Header = () => {
     <header className='l-header'>
       <div className="inner">
         <Link href="/">
-          <img className='logo' src="/logo.png" alt="" />
+          <Image className='logo' src="/logo.png" width={160} height={80} alt="" />
           <div className="text">Beauty Palette</div>
         </Link>
         <div className="l-header__contents">
           <div className="icon">
-            {isLoggedIn && <img src="/icon.png" alt="icon" />}
+            {isLoggedIn && (<Image src={user?.icon ? user.icon : "/icon.png"} alt="icon" width={160}
+  height={80} />)}
           </div>
           <div className="nav-buttons">
             {isLoggedIn ? (
-              <div>{ user?.name }</div>
+                <div>{ user?.name }</div>
             ) : (
               <Link href="/login">login</Link>
             )}
